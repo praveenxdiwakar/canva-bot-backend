@@ -1,0 +1,14 @@
+{
+  "name": "canva-bot-backend",
+  "version": "1.0.0",
+  "description": "Auto-detect background worker for Canva Pro Mini App",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "dotenv": "^16.4.5",
+    "telegraf": "^4.16.3"
+  }
+}

@@ -1,6 +1,8 @@
-require('dotenv').config();
-const { Telegraf } = require('telegraf');
-const { createClient } = require('@supabase/supabase-js');
+import dotenv from 'dotenv';
+import { Telegraf } from 'telegraf';
+import { createClient } from '@supabase/supabase-js';
+
+dotenv.config();
 
 // 1. Initialize Supabase and Telegram Bot
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
@@ -19,7 +21,6 @@ bot.start(async (ctx) => {
   const username = ctx.from.username || 'Unknown';
 
   try {
-    // Upsert the user into the database and mark bot as started
     await supabase.from('users').upsert({ 
       telegram_id: tgIdStr,
       username: username,
@@ -29,7 +30,7 @@ bot.start(async (ctx) => {
     ctx.reply("👋 Welcome to Canva Pro Mini App! Click the button below to open the app.", {
       reply_markup: {
         inline_keyboard: [[
-          { text: "🎨 Open App", web_app: { url: "https://your-mini-app-url.vercel.app" } }
+          { text: "🎨 Open App", web_app: { url: "https://canva-pro-mini-web-app.vercel.app" } }
         ]]
       }
     });
@@ -46,7 +47,6 @@ bot.on('my_chat_member', async (ctx) => {
   const tgIdStr = String(ctx.from.id);
   const newStatus = ctx.update.my_chat_member.new_chat_member.status;
   
-  // 'kicked' means the user blocked the bot. 'member' means they restarted it.
   const isStarted = newStatus !== 'kicked';
 
   try {
@@ -65,7 +65,6 @@ bot.on('chat_member', async (ctx) => {
   const tgIdStr = String(ctx.from.id);
   const newStatus = ctx.update.chat_member.new_chat_member.status;
   
-  // They are actively in the chat if status is member, administrator, or creator
   const activeStatuses = ['member', 'administrator', 'creator', 'restricted'];
   const isJoined = activeStatuses.includes(newStatus);
 
@@ -90,6 +89,5 @@ bot.launch().then(() => {
   console.log("✅ Bot is actively listening to Telegram events!");
 });
 
-// Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
